@@ -1,16 +1,16 @@
 import os
 import sys
 
+root_path = os.path.abspath(
+    os.path.join(os.path.split(__file__)[0], os.pardir, os.pardir)
+)  # code folder of the project
+sys.path.insert(0, root_path)
+
 import numpy as np
 import pandas as pd
 import pytest
 
 from package.analysis import create_data
-
-root_path = os.path.abspath(
-    os.path.join(os.path.split(__file__)[0], os.pardir, os.pardir)
-)  # code folder of the project
-sys.path.insert(0, root_path)
 
 
 @pytest.mark.data

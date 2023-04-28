@@ -1,6 +1,14 @@
+import os
+import sys
+
+root_path = os.path.abspath(
+    os.path.join(os.path.split(__file__)[0], os.pardir, os.pardir)
+)  # code folder of the project
+sys.path.insert(0, root_path)
+
 import pytest
 import numpy as np
-import transform as tf
+import package.transform as tf
 
 
 @pytest.mark.circles
