@@ -9,6 +9,7 @@ sys.path.insert(0, root_path)
 import numpy as np
 import pandas as pd
 import pytest
+import shutil
 
 from package.analysis import create_data
 
@@ -19,6 +20,8 @@ def test_create_data():
     freq_list = [1]
     file_name = "data.csv"
     file_path = root_path + "/output/" + file_name
+    dir, f = os.path.split(file_path)
+    os.makedirs(dir, exist_ok=True)
     # file_path = './test_dataset_1.csv'
     create_data(freq_list, file_path)
     assert os.path.isfile(file_path)
@@ -39,4 +42,4 @@ def test_create_data():
     assert isinstance(data["Y"][0], np.float64)
 
     # remove the test files after testing
-    os.remove(file_path)
+    shutil.rmtree(dir)
