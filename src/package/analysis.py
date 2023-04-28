@@ -8,15 +8,15 @@ Contains functionality to create, analyze and plot data.
 import os
 import sys
 
-import pandas as pd
-import numpy as np
-from scipy.fft import fft
-import matplotlib.pyplot as plt
-
 root_path = os.path.abspath(
     os.path.join(os.path.split(__file__)[0], os.pardir)
 )  # code folder of the project
 sys.path.insert(0, root_path)
+
+import pandas as pd
+import numpy as np
+from scipy.fft import fft
+import matplotlib.pyplot as plt
 
 
 def create_data(freq_list, file_path):
