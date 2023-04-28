@@ -5,15 +5,19 @@ Contains functionality to create, analyze and plot data.
 
 @Thomas Arne Hensel, 04/2023
 """
-import os, sys
-root_path = os.path.abspath(os.path.join(os.path.split(__file__)[0], os.pardir)) # code folder of the project
-sys.path.insert(0, root_path)
+import os
+import sys
 
 import pandas as pd
 import numpy as np
-from scipy.stats import poisson
 from scipy.fft import fft
 import matplotlib.pyplot as plt
+
+root_path = os.path.abspath(
+    os.path.join(os.path.split(__file__)[0], os.pardir)
+)  # code folder of the project
+sys.path.insert(0, root_path)
+
 
 def create_data(freq_list, file_path):
     """
@@ -24,22 +28,25 @@ def create_data(freq_list, file_path):
 
     :return: None
 
-    The function generates a dataset with sinusoidal functions, Poissonian noise and saves the 
-    dataset as a comma-separated (.csv) file at the specified file path. The function takes two 
-    arguments, freq_list and file_path. freq_list is a list of frequencies for sinusoidal functions 
+    The function generates a dataset with sinusoidal functions, Poissonian noise and saves the
+    dataset as a comma-separated (.csv) file at the specified file path. The function takes two
+    arguments, freq_list and file_path. freq_list is a list of frequencies for sinusoidal functions
     and file_path is a string with file path to save dataset as csv file.
 
     Example:
         create_data(freq_list=[1, 3, 5], file_path='./dataset.csv')
     """
     min_freq = min(freq_list)
-    x = np.linspace(0, 2*np.pi/(min_freq), 1000)
-    y = len(freq_list)+np.sum([np.sin(f*x) for f in freq_list], axis=0) # sum of different harmonic functions
-    noise = np.random.default_rng().poisson(y) # generate poissonian noise
-    y += noise # add noise to the data
-    data = pd.DataFrame({'X': x, 'Y': y})
+    x = np.linspace(0, 2 * np.pi / (min_freq), 1000)
+    y = len(freq_list) + np.sum(
+        [np.sin(f * x) for f in freq_list], axis=0
+    )  # sum of different harmonic functions
+    noise = np.random.default_rng().poisson(y)  # generate poissonian noise
+    y += noise  # add noise to the data
+    data = pd.DataFrame({"X": x, "Y": y})
     data.to_csv(file_path, index=False)
     pass
+
 
 def analyze_data(file_path):
     """
@@ -61,17 +68,17 @@ def analyze_data(file_path):
     computed to obtain the phase.
 
     The top 5 frequencies in the data are determined by finding the indices with the highest amplitudes and returning
-    the corresponding frequencies, amplitudes, and phases.\n    """
+    the corresponding frequencies, amplitudes, and phases.\n"""
     data = pd.read_csv(file_path)
-    x = data['X']
-    y = data['Y']
+    x = data["X"]
+    y = data["Y"]
     N = len(x)
     dt = x[1] - x[0]
-    frequencies = np.linspace(0.0, 0.5/dt, N//2)
+    frequencies = np.linspace(0.0, 0.5 / dt, N // 2)
 
     Y = np.abs(fft(y.values))
-    amplitudes = 2.0/N * np.abs(Y[:N//2])
-    phases = np.angle(Y[:N//2])
+    amplitudes = 2.0 / N * np.abs(Y[: N // 2])
+    phases = np.angle(Y[: N // 2])
 
     idx = np.argsort(amplitudes)[::-1][:5]
     frequencies = frequencies[idx]
@@ -80,7 +87,13 @@ def analyze_data(file_path):
 
     return frequencies, amplitudes, phases
 
-def visualize_data(file_path: str, frequencies: list[float], amplitudes: list[float], phases: list[float]) -> None:
+
+def visualize_data(
+    file_path: str,
+    frequencies: list[float],
+    amplitudes: list[float],
+    phases: list[float],
+) -> None:
     """
     Visualize a set of harmonic signals corresponding to specified frequencies, amplitudes, and phases.
 
@@ -107,19 +120,19 @@ def visualize_data(file_path: str, frequencies: list[float], amplitudes: list[fl
     This will generate a plot of the original data overlaid with the harmonic signals with frequencies of 1, 2,\n    and 3 Hz, amplitudes of 1, 0.5, and 0.25, and no phase shifts.
     """
     data = pd.read_csv(file_path)
-    x = data['X']
-    y = data['Y']
+    x = data["X"]
+    y = data["Y"]
     N = len(x)
     dt = x[1] - x[0]
-    t = np.linspace(0, N*dt, N)
+    t = np.linspace(0, N * dt, N)
 
     y_combined = np.zeros_like(y)
     for i in range(len(frequencies)):
-        y_combined += amplitudes[i] * np.sin(2*np.pi*frequencies[i]*t + phases[i])
+        y_combined += amplitudes[i] * np.sin(2 * np.pi * frequencies[i] * t + phases[i])
     y_combined += np.mean(y)
 
-    plt.plot(x, y, label='Original data')
-    plt.plot(x, y_combined, label='Harmonic signals')
+    plt.plot(x, y, label="Original data")
+    plt.plot(x, y_combined, label="Harmonic signals")
     plt.legend()
     # Save plot as a PDF
     file_dir = os.path.dirname(file_path)
@@ -127,5 +140,3 @@ def visualize_data(file_path: str, frequencies: list[float], amplitudes: list[fl
     plot_path = os.path.join(file_dir, f"{file_name}_harmonic.pdf")
     plt.savefig(plot_path)
     pass
-
-

@@ -10,5 +10,3 @@ def test_area_circ():
     # Test with a negative radius
     with pytest.raises(ValueError):
         area_circ(-1)
-
-
