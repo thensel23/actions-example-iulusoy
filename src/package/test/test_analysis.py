@@ -5,10 +5,11 @@ sys.path.insert(0, root_path)
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from package.analysis import create_data
 
-
+@pytest.mark.data
 def test_create_data():
     # create a dataset with a single frequency and check if it exists
     freq_list = [1]
