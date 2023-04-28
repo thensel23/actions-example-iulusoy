@@ -1,15 +1,12 @@
-import unittest
-import numpy as np
-import transform as tf
+import pytest
+from transform import area_circ
 
 
-class test_area_circ(unittest.TestCase):
-    def test_area_circ(self):
-        """Test the area values against a reference for r >= 0."""
-        self.assertEqual(tf.area_circ(1), np.pi)
-        self.assertEqual(tf.area_circ(0), 0)
-        self.assertEqual(tf.area_circ(2.1), np.pi * 2.1**2)
-
-    def test_values(self):
-        """Make sure value errors are recognized for area_circ."""
-        self.assertRaises(ValueError, tf.area_circ, -5)
+def test_area_circ():
+    # Test with a positive radius
+    assert area_circ(2) == 12.566370614359172
+    # Test with zero radius
+    assert area_circ(0) == 0
+    # Test with a negative radius
+    with pytest.raises(ValueError):
+        area_circ(-1)
